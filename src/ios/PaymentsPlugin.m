@@ -63,7 +63,16 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     return;
   }
-  [[RMStore defaultStore] addPayment:productId success:^(SKPaymentTransaction *transaction) {
+
+    id quantity = [command.arguments objectAtIndex:1];
+    if (![quantity isKindOfClass:[NSNumber class]]) {
+        CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Quantity must be a number"];
+        [pluginResult setKeepCallbackAsBool:YES];
+        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        return;
+    }
+    
+    [[RMStore defaultStore] addPayment:productId user:nil quantity:[quantity integerValue] success:^(SKPaymentTransaction *transaction) {
     NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
     NSData *receiptData = [NSData dataWithContentsOfURL:receiptURL];
     NSString *encReceipt = [receiptData base64EncodedStringWithOptions:0];

@@ -1,3 +1,4 @@
+cordova.define("cordova-plugin-inapppurchase.PaymentsPlugin", function(require, exports, module) {
 'use strict';
 
 /*!
@@ -92,12 +93,12 @@ inAppPurchase.getProducts = function (productIds) {
   });
 };
 
-inAppPurchase.buy = function (productId) {
+inAppPurchase.buy = function (productId, quantity) {
   return new Promise(function (resolve, reject) {
     if (!inAppPurchase.utils.validString(productId)) {
       reject(new Error(inAppPurchase.utils.errors[102]));
     } else {
-      nativeCall('buy', [productId]).then(function (res) {
+      nativeCall('buy', [productId, quantity]).then(function (res) {
         resolve({
           transactionId: res.transactionId,
           receipt: res.receipt
@@ -153,3 +154,4 @@ inAppPurchase.restorePurchases = function () {
 };
 
 module.exports = inAppPurchase;
+});

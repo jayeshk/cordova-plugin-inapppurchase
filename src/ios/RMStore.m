@@ -191,11 +191,19 @@ typedef void (^RMStoreSuccessBlock)();
            success:(void (^)(SKPaymentTransaction *transaction))successBlock
            failure:(void (^)(SKPaymentTransaction *transaction, NSError *error))failureBlock
 {
-    [self addPayment:productIdentifier user:nil success:successBlock failure:failureBlock];
+    //[self addPayment:productIdentifier user:nil success:successBlock failure:failureBlock];
+    [self addPayment:productIdentifier user:nil quantity:1 success:successBlock failure:failureBlock];
+}
+
+- (void)addPayment:(NSString*)productIdentifier withQuanitity:(NSInteger )quantity
+           success:(void (^)(SKPaymentTransaction *transaction))successBlock
+           failure:(void (^)(SKPaymentTransaction *transaction, NSError *error))failureBlock
+{
+    [self addPayment:productIdentifier user:nil quantity:quantity success:successBlock failure:failureBlock];
 }
 
 - (void)addPayment:(NSString*)productIdentifier
-              user:(NSString*)userIdentifier
+              user:(NSString*)userIdentifier quantity:(NSInteger )quantity
            success:(void (^)(SKPaymentTransaction *transaction))successBlock
            failure:(void (^)(SKPaymentTransaction *transaction, NSError *error))failureBlock
 {
@@ -210,11 +218,14 @@ typedef void (^RMStoreSuccessBlock)();
         }
         return;
     }
+    
     SKMutablePayment *payment = [SKMutablePayment paymentWithProduct:product];
     if ([payment respondsToSelector:@selector(setApplicationUsername:)])
     {
         payment.applicationUsername = userIdentifier;
     }
+    
+    payment.quantity = quantity;
     
     RMAddPaymentParameters *parameters = [[RMAddPaymentParameters alloc] init];
     parameters.successBlock = successBlock;
